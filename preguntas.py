@@ -157,8 +157,8 @@ def pregunta_10():
     la columna _c2 para el archivo `tbl0.tsv`.
 
     Rta/
-                                   _c1
-      _c0
+                                   _c2
+      _c1
     0   A              1:1:2:3:6:7:8:9
     1   B                1:3:4:5:6:8:9
     2   C                    0:5:6:7:9
@@ -173,10 +173,10 @@ def pregunta_10():
         for item in list(np.sort(df, axis=0)):
             string = string + str(item) + ":"
         string = string[:-1]
-        temp = pd.DataFrame({"_c0":[letra], "_c1": string})
+        temp = pd.DataFrame({"_c1":[letra], "_c2": string})
         dataf = dataf.append(temp, ignore_index=True)
-    return dataf.sort_values("_c0").reset_index().drop("index", axis =1)
-
+    return dataf.sort_values("_c1").reset_index().drop("index", axis =1)
+#print(pregunta_10())
 def pregunta_11():
     """
     Construya una tabla que contenga _c0 y una lista separada por ',' de los valores de
