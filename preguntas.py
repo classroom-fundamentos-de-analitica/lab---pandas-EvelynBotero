@@ -221,8 +221,19 @@ def pregunta_12():
     38   38                    eee:0,fff:9,iii:2
     39   39                    ggg:3,hhh:8,jjj:5
     """
-    return
+    dataf = pd.DataFrame()
+    for letra in tbl2["_c0"].unique():
+        df = np.where(tbl2["_c0"]==letra,tbl2["_c5a"],"")
+        df = np.delete(df, np.where(df == ""))
+        string = ""
+        for item in list(np.sort(df, axis=0)):
+            string = string + str(item) + ","
+        string = string[:-1]
+        temp = pd.DataFrame({"_c0":[letra], "_c5": string})
+        dataf = dataf.append(temp, ignore_index=True)
 
+    return dataf
+print(pregunta_12())
 def pregunta_13():
     """
     Si la columna _c0 es la clave en los archivos `tbl0.tsv` y `tbl2.tsv`, compute la
