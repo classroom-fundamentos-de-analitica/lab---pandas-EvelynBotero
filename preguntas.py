@@ -90,13 +90,13 @@ def pregunta_06():
     ['A', 'B', 'C', 'D', 'E', 'F', 'G']
 
     """
-    lst = []
+    lista = []
     for item in tbl1["_c4"]:
-        if item.upper() not in lst:
-            lst.append(item.upper())
-    lst.sort()
+        if item.upper() not in lista:
+            lista.append(item.upper())
+    lista.sort()
     
-    return lst
+    return lista
 
 def pregunta_07():
     """
@@ -165,17 +165,17 @@ def pregunta_10():
     3   D                  1:2:3:5:5:7
     4   E  1:1:2:3:3:4:5:5:5:6:7:8:8:9
     """
-    dataf = pd.DataFrame()
+    dataframe = pd.DataFrame()
     for letra in tbl0["_c1"].unique():
-        df = np.where(tbl0["_c1"]==letra,tbl0["_c2"],"")
-        df = np.delete(df, np.where(df == ""))
+        dataf = np.where(tbl0["_c1"]==letra,tbl0["_c2"],"")
+        dataf = np.delete(dataf, np.where(dataf == ""))
         string = ""
-        for item in list(np.sort(df, axis=0)):
+        for item in list(np.sort(dataf, axis=0)):
             string = string + str(item) + ":"
         string = string[:-1]
         temp = pd.DataFrame({"_c1":[letra], "_c2": string})
-        dataf = dataf.append(temp, ignore_index=True)
-    return dataf.sort_values("_c1").set_index("_c1")
+        dataframe = dataframe.append(temp, ignore_index=True)
+    return dataframe.sort_values("_c1").set_index("_c1")
 
 def pregunta_11():
     """
@@ -193,18 +193,18 @@ def pregunta_11():
     38   38      d,e
     39   39    a,d,f
     """
-    dataf = pd.DataFrame()
+    dataframe = pd.DataFrame()
     for letra in tbl1["_c0"].unique():
-        df = np.where(tbl1["_c0"]==letra,tbl1["_c4"],"")
-        df = np.delete(df, np.where(df == ""))
+        dataf = np.where(tbl1["_c0"]==letra,tbl1["_c4"],"")
+        dataff = np.delete(dataf, np.where(dataf == ""))
         string = ""
-        for item in list(np.sort(df, axis=0)):
+        for item in list(np.sort(dataf, axis=0)):
             string = string + str(item) + ","
         string = string[:-1]
         temp = pd.DataFrame({"_c0":[letra], "_c4": string})
-        dataf = dataf.append(temp, ignore_index=True)
+        dataframe = dataframe.append(temp, ignore_index=True)
 
-    return dataf
+    return dataframe
 
 def pregunta_12():
     """
@@ -221,19 +221,30 @@ def pregunta_12():
     38   38                    eee:0,fff:9,iii:2
     39   39                    ggg:3,hhh:8,jjj:5
     """
-    dataf = pd.DataFrame()
-    for letra in tbl2["_c0"].unique():
-        df = np.where(tbl2["_c0"]==letra,tbl2["_c5a"],"")
-        df = np.delete(df, np.where(df == ""))
-        string = ""
-        for item in list(np.sort(df, axis=0)):
-            string = string + str(item) + ","
-        string = string[:-1]
-        temp = pd.DataFrame({"_c0":[letra], "_c5": string})
-        dataf = dataf.append(temp, ignore_index=True)
-
+        diccionario = {}
+    for i in range (len(tbl2)):
+        if tbl2.loc[i]["_c0"] in diccionario:
+            diccionario[tbl2.loc[i]["_c0"]] = diccionario[tbl2.loc[i]["_c0"]] + "," + tbl2.loc[i]["_c5a"] + ":" + str(tbl2.loc[i]["_c5b"])
+        else:
+            diccionario[tbl2.loc[i]["_c0"]] = tbl2.loc[i]["_c5a"] + ":" + str(tbl2.loc[i]["_c5b"])
+            
+    for k,v in diccionario.items():
+        lista = v.split(",")
+        lista.sort()
+        diccionario[k] = lista
+    dataf = pd.DataFrame({"_c0": diccionario.keys(),
+            "_c5a" : diccionario.values()})
+    lista = []
+    for valor in dataf["_c5a"]:
+        string = "hola"
+        for i in valor:
+            string = string + ',' + i
+        lista.append(string)
+    dataf['_c5'] = lista
+    dataf['_c5'] = dataf['_c5'].str.replace('hola,','')
+    del dataf['_c5a']
     return dataf
-print(pregunta_12())
+
 def pregunta_13():
     """
     Si la columna _c0 es la clave en los archivos `tbl0.tsv` y `tbl2.tsv`, compute la
@@ -248,4 +259,4 @@ def pregunta_13():
     E    275
     Name: _c5b, dtype: int64
     """
-    return
+    return tbl0.merge(tbl2, right_on = '_c0', left_on = '_c0').groupby('_c1').sum()['_c5b']
